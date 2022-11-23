@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require(`cors`);
 const morgan = require(`morgan`);
+const bodyParser = require(`body-parser`);
 require(`dotenv`).config();
 
 const { Client } = require('pg');
@@ -22,6 +23,7 @@ const port = process.env.PORT;
 
 app.use(cors());
 app.use(morgan('dev'));
+app.use(bodyParser.json());
 
 app.all('*', (req, res, next) => {
   res.status(404).json({ status: 'error', statusCode: 404 });
