@@ -3,7 +3,8 @@ const cors = require(`cors`);
 require(`dotenv`).config();
 
 const app = express();
-const port = process.env.PORT;
+// const port = process.env.PORT;
+const port = 3001;
 
 app.use(cors());
 
@@ -16,5 +17,5 @@ app.use('/', (req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Example app listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });

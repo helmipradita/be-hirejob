@@ -30,7 +30,7 @@ INSERT INTO employee(id,fullname,job_desk,domisili,tempat_kerja,description,skil
 
 
 CREATE TABLE skill(id SERIAL PRIMARY KEY,category VARCHAR NOT NULL);
-INSERT INTO skill(id,categorys) VALUES(1,'Javascript'),(2,'PHP'),(3,'Java'),(4,'Go');
+INSERT INTO skill(id,category) VALUES(1,'Javascript'),(2,'PHP'),(3,'Java'),(4,'Go');
 
 
 
