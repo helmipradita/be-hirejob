@@ -3,6 +3,9 @@
 const  ModelEmployee = require('../models/employee')
 const pool = require('../config/db');
 const {response} = require ('../middleware/common')
+//const {cloudinary} = require('../middleware/cloudinary')
+
+
 
 //untuk control
 const EmployeeController = {
