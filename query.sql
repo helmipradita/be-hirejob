@@ -11,6 +11,8 @@ ALTER TABLE users ADD position VARCHAR(32);
 
 ALTER TABLE users ADD verif INT;
 
+ALTER TABLE 
+
 
 
 

@@ -116,7 +116,7 @@ const UsersController = {
     }
 
     if (users.otp == otp) {
-      const result = await verification(req.params.email_user);
+      const result = await verification(req.body.email);
       return response(res, 200, true, result, " verification email success");
     }
     return response(
