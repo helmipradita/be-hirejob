@@ -6,8 +6,8 @@ const create = (data) => {
     name,
     email,
     phone_number,
-    perusahaan,
     company,
+    position,
     password,
     role,
     otp,
@@ -54,10 +54,24 @@ const verification = (email) => {
   );
 };
 
-const forgotPassword = (email) => {
+const changePassword = (email, password) => {
   return new Promise((resolve, reject) =>
     Pool.query(
-      `UPDATE Password users WHERE email='${email}'`,
+      `UPDATE users SET password='${password}' WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+const updateOtp = (email, otp) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE users SET otp='${otp}' WHERE email='${email}'`,
       (err, result) => {
         if (!err) {
           resolve(result);
@@ -69,4 +83,4 @@ const forgotPassword = (email) => {
   );
 };
 
-module.exports = { create, findEmail, verification, forgotPassword };
+module.exports = { create, findEmail, verification, changePassword, updateOtp };

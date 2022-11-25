@@ -1,12 +1,17 @@
 const { response } = require("../middleware/common");
-const { create, findEmail, verification } = require("../models/users");
+const {
+  create,
+  findEmail,
+  verification,
+  forgotPassword,
+  updateOtp,
+  changePassword,
+} = require("../models/users");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 const { generateToken, generateRefreshToken } = require("../helpers/auth");
 const { validate } = require("../helpers/users");
 const email = require("../middleware/email");
-const { contentSecurityPolicy } = require("helmet");
-const { use } = require("../routes");
 
 const Port = process.env.PORT;
 const Host = process.env.HOST;
@@ -45,7 +50,8 @@ const UsersController = {
       const result = await create(data);
       if (result) {
         let verifUrl = `http://${Host}:${Port}/users/${req.body.email}/${otp}`;
-        let sendEmail = email(req.body.email, otp, req.body.name);
+        let text = `Hello ${req.body.name} \n Thank you for join us. Please confirm your email by clicking on the following link ${verifUrl}`;
+        let sendEmail = email(req.body.email, otp, text);
         if (sendEmail == "email not sent!") {
           return response(res, 404, false, null, "register fail");
         }
@@ -132,22 +138,54 @@ const UsersController = {
   },
 
   forgotPassword: async (req, res) => {
-    const { email } = req.body;
     const {
       rows: [users],
-    } = await findEmail(email);
-    if (users) {
-      return response(res, 200, true, null, " email success");
-    }
+    } = await findEmail(req.body.email);
     if (!users) {
       return response(res, 404, false, null, " email not found");
     }
+    let digits = "0123456789";
+    let otp = "";
+    for (let i = 0; i < 6; i++) {
+      otp += digits[Math.floor(Math.random() * 10)];
+    }
+    let text = `Hello ${users.name} \n Please verification your otp. `;
+    let sendEmail = email(req.body.email, otp, text);
+    if (sendEmail == "email not sent!") {
+      return response(res, 404, false, null, "email fail");
+    }
+
+    try {
+      const result = await updateOtp(req.body.email, otp);
+      if (result) {
+        return response(res, 200, true, null, "send email success");
+      }
+    } catch (error) {
+      console.log(error);
+      return response(res, 404, false, null, "send email error");
+    }
+  },
+
+  resetPassword: async (req, res) => {
+    const { email, otp } = req.body;
+    const {
+      rows: [users],
+    } = await findEmail(email);
+    if (!users) {
+      return response(res, 404, false, null, " email not found");
+    }
+
+    if (users.otp == otp) {
+      let password = bcrypt.hashSync(req.body.password);
+      const result = await changePassword(req.body.email, password);
+      return response(res, 200, true, result, " change password email success");
+    }
     return response(
       res,
-      200,
-      true,
-      { email: req.body.email },
-      "Email success "
+      404,
+      false,
+      null,
+      " wrong otp please check your email"
     );
   },
 };

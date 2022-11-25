@@ -7,6 +7,7 @@ const { role } = require("../middleware/auth");
 router.post("/register/:role", role, UsersController.registerUsers);
 router.post("/login/:role", role, UsersController.login);
 router.post("/verificationOtp", UsersController.verificationOtp);
-router.put("/resetPassword", UsersController.forgotPassword);
+router.post("/forgotPassword", UsersController.forgotPassword);
+router.post("/resetPassword", UsersController.resetPassword);
 
 module.exports = router;
