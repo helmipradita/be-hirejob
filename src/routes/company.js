@@ -1,6 +1,11 @@
 const express = require(`express`);
 const router = express.Router();
 const { CompanyController } = require(`../controllers/company`);
+const { protect } = require('../middleware/auth_company');
+
+router.post('/register', CompanyController.register);
+router.post('/login', CompanyController.login);
+router.get('/profile', protect, CompanyController.profile);
 
 router.get(`/`, CompanyController.select);
 router.post(`/`, CompanyController.insert);
