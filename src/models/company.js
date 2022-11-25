@@ -42,26 +42,42 @@ const findEmail = (email) => {
   );
 };
 
-const selectData = () => Pool.query(`SELECT * FROM tbl_company`);
-
-const insertData = (data) => {
-  const { nama } = data;
-  return Pool.query(`INSERT INTO tbl_company(nama) VALUES('${nama}')`);
-};
-
-const deleteData = (id) =>
-  Pool.query(`DELETE FROM tbl_company WHERE id ='${id}'`);
-
-const updateData = (id, data) => {
-  const { nama } = data;
-  return Pool.query(`UPDATE tbl_company SET nama ='${nama}' WHERE id=${id}`);
+const setHire = ({
+  id,
+  tujuan,
+  company_nama,
+  company_email,
+  company_telepon,
+  deskripsi,
+  company_id,
+  employee_id,
+}) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'INSERT INTO tbl_hire(id, tujuan, company_nama, company_email, company_telepon, deskripsi, company_id, employee_id)VALUES($1, $2, $3, $4, $5, $6, $7, $8)',
+      [
+        id,
+        tujuan,
+        company_nama,
+        company_email,
+        company_telepon,
+        deskripsi,
+        company_id,
+        employee_id,
+      ],
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(new Error(err));
+        }
+      }
+    );
+  });
 };
 
 module.exports = {
   register,
   findEmail,
-  selectData,
-  insertData,
-  deleteData,
-  updateData,
+  setHire,
 };

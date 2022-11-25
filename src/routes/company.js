@@ -3,13 +3,13 @@ const router = express.Router();
 const { CompanyController } = require(`../controllers/company`);
 const { protect } = require('../middleware/auth');
 
+//Auth
 router.post('/register', CompanyController.register);
 router.post('/login', CompanyController.login);
-router.get('/profile', protect, CompanyController.profile);
 
-router.get(`/`, CompanyController.select);
-router.post(`/`, CompanyController.insert);
-router.put(`/:id`, CompanyController.update);
-router.delete(`/:id`, CompanyController.delete);
+//Profile
+router.get('/profile', protect, CompanyController.profile);
+router.post('/hire', protect, CompanyController.addHire);
+// router.get(`/`, protect, CompanyController.getHire);
 
 module.exports = router;

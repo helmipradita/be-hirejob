@@ -1,5 +1,5 @@
 const { response } = require(`../middleware/common`);
-const { register, findEmail } = require(`../models/company`);
+const { register, findEmail, setHire } = require(`../models/company`);
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { generateToken, refreshToken } = require(`../helpers/auth`);
@@ -68,6 +68,7 @@ const CompanyController = {
     delete tbl_company.verif;
     delete tbl_company.otp;
     let payload = {
+      id: tbl_company.id,
       email: tbl_company.email,
       role: tbl_company.role,
     };
@@ -114,43 +115,35 @@ const CompanyController = {
       response(res, 404, false, err, ' register fail');
     }
   },
-  update: (req, res, next) => {
-    ModelCompany.updateData(req.params.id, req.body)
-      .then((result) =>
-        res.send({
-          status: 200,
-          message: `berhasil mengupdate roles`,
-          data: req.body,
-        })
-      )
-      .catch((err) => res.send({ message: `error`, err }));
-  },
-  select: (req, res, next) => {
-    ModelCompany.selectData()
-      .then((result) => res.send({ result: result.rows }))
-      .catch((err) => res.send({ message: `error`, err }));
-  },
-  insert: (req, res, next) => {
-    ModelCompany.insertData(req.body)
-      .then((result) =>
-        res.send({
-          status: 200,
-          message: `berhasil menambahkan roles`,
-          data: req.body,
-        })
-      )
-      .catch((err) => res.send({ message: `error`, err }));
-  },
-  delete: (req, res, next) => {
-    ModelCompany.deleteData(req.params.id)
-      .then((result) =>
-        res.send({
-          status: 200,
-          message: `berhasil menghapus roles`,
-          data: req.body,
-        })
-      )
-      .catch((err) => res.send({ message: `error`, err }));
+  addHire: async (req, res, next) => {
+    try {
+      const {
+        tujuan,
+        company_nama,
+        company_email,
+        company_telepon,
+        deskripsi,
+        employee_id,
+      } = req.body;
+      const company_id = req.payload.id;
+
+      const dataHire = {
+        id: uuidv4(),
+        tujuan,
+        company_nama,
+        company_email,
+        company_telepon,
+        deskripsi,
+        company_id,
+        employee_id,
+      };
+
+      setHire(dataHire);
+      response(res, 200, true, dataHire, 'Insert Hire success');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, 'Insert Hire fail');
+    }
   },
 };
 
