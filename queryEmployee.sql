@@ -13,7 +13,8 @@ CREATE TABLE working_experince(
     description VARCHAR NOT NULL,
     bulan_tahun VARCHAR NOT NULL
 );
-INSERT INTO working_experince(id,posisi,nama_perusahaan,description,bulan_tahun) VALUES(1,'Frontend','TES','Telah menjadi seorang frontend selama 4 tahun','4 Tahun');
+
+ALTER TABLE working_experince ADD COLUMN employee_id
 
 CREATE TABLE employee(
     id SERIAL PRIMARY KEY,
@@ -22,15 +23,17 @@ CREATE TABLE employee(
     domisili VARCHAR NOT NULL,
     tempat_kerja VARCHAR NOT NULL,
     description TEXT,
-    skill REFERENCES skill(id),
+    skill VARCHAR NOT NULL,
     working_experince VARCHAR NOT NULL,
     portofolio VARCHAR NOT NULL
 );
-INSERT INTO employee(id,fullname,job_desk,domisili,tempat_kerja,description,skill,working_experince,portofolio) VALUES(1,'lidia wati',job_desk,'Jakarta','Perusahaan TES','lorem10',1,'Fullstack pada perusahaan TES 2',portofolio);
 
 
-CREATE TABLE skill(id SERIAL PRIMARY KEY,category VARCHAR NOT NULL);
-INSERT INTO skill(id,category) VALUES(1,'Javascript'),(2,'PHP'),(3,'Java'),(4,'Go');
+INSERT INTO working_experince(id,posisi,nama_perusahaan,description,bulan_tahun) VALUES(3,'Frontend','TES3','Telah menjadi seorang frontend selama 4 tahun','4 Tahun');
+INSERT INTO employee(id,fullname,job_desk,domisili,tempat_kerja,description,skill,working_experince,portofolio) VALUES(3,'nur fatimah','Frontend','Aceh','Perusahaan TES','lorem10','Javascript','Fullstack pada perusahaan TES 3','portofolio');
+
+
+
 
 
 
