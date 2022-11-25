@@ -6,6 +6,7 @@ const { generateToken, generateRefreshToken } = require("../helpers/auth");
 const { validate } = require("../helpers/users");
 const email = require("../middleware/email");
 const { contentSecurityPolicy } = require("helmet");
+const { use } = require("../routes");
 
 const Port = process.env.PORT;
 const Host = process.env.HOST;
@@ -35,6 +36,8 @@ const UsersController = {
       email: req.body.email,
       password,
       phone_number: req.body.phone_number,
+      company: req.body.company,
+      position: req.body.position,
       role,
       otp,
     };
@@ -125,6 +128,26 @@ const UsersController = {
       false,
       null,
       " wrong otp please check your email"
+    );
+  },
+
+  forgotPassword: async (req, res) => {
+    const { email } = req.body;
+    const {
+      rows: [users],
+    } = await findEmail(email);
+    if (users) {
+      return response(res, 200, true, null, " email success");
+    }
+    if (!users) {
+      return response(res, 404, false, null, " email not found");
+    }
+    return response(
+      res,
+      200,
+      true,
+      { email: req.body.email },
+      "Email success "
     );
   },
 };
