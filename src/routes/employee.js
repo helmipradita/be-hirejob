@@ -1,7 +1,7 @@
 const express = require(`express`);
 const router = express.Router();
 const { EmployeeController } = require(`../controllers/employee`);
-const { protect } = require('../middleware/auth_employee');
+const { protect } = require('../middleware/auth');
 
 //Auth
 router.post('/register', EmployeeController.register);
