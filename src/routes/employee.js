@@ -10,5 +10,7 @@ router.post('/login', EmployeeController.login);
 //Profile
 router.get(`/profile`, protect, EmployeeController.profile);
 router.get(`/profile/:id`, EmployeeController.profileById);
+router.post('/experience', protect, EmployeeController.insertExperience);
+router.post('/skill', protect, EmployeeController.insertSkill);
 
 module.exports = router;

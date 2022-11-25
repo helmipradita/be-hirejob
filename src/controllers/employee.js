@@ -1,5 +1,11 @@
 const { response } = require(`../middleware/common`);
-const { register, findEmail, findById } = require(`../models/employee`);
+const {
+  register,
+  findEmail,
+  findById,
+  setExperience,
+  setSkill,
+} = require(`../models/employee`);
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { generateToken, refreshToken } = require(`../helpers/auth`);
@@ -66,6 +72,7 @@ const EmployeeController = {
     delete tbl_employee.verif;
     delete tbl_employee.otp;
     let payload = {
+      id: tbl_employee.id,
       email: tbl_employee.email,
       role: tbl_employee.role,
     };
@@ -120,6 +127,42 @@ const EmployeeController = {
     } catch (error) {
       console.log(error);
       response(res, 404, false, 'Get Data fail');
+    }
+  },
+  insertExperience: async (req, res, next) => {
+    try {
+      const { posisi, nama_perusahaan, bulan_tahun, deskripsi } = req.body;
+      const employee_id = req.payload.id;
+
+      const dataExperience = {
+        posisi,
+        nama_perusahaan,
+        bulan_tahun,
+        deskripsi,
+        employee_id,
+      };
+      await setExperience(dataExperience);
+      response(res, 200, true, dataExperience, 'Get Data success');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, 'Insert experience fail');
+    }
+  },
+  insertSkill: async (req, res, next) => {
+    try {
+      const { name } = req.body;
+      const user_id = req.payload.id;
+
+      const dataSkill = {
+        name,
+        user_id,
+      };
+
+      setSkill(dataSkill);
+      response(res, 200, true, dataSkill, 'Insert skill success');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, 'Insert skill fail');
     }
   },
 };

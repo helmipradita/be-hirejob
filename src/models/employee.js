@@ -44,8 +44,48 @@ const findById = (id) => {
   );
 };
 
+const setExperience = ({
+  posisi,
+  nama_perusahaan,
+  bulan_tahun,
+  deskripsi,
+  employee_id,
+}) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'INSERT INTO tbl_experience( posisi,nama_perusahaan,bulan_tahun,deskripsi,employee_id) VALUES ($1,$2,$3,$4,$5)',
+      [posisi, nama_perusahaan, bulan_tahun, deskripsi, employee_id],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+const setSkill = ({ name, user_id }) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'INSERT INTO tbl_skill(user_id, name) VALUES ($2, $1)',
+      [name, user_id],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   register,
   findEmail,
   findById,
+  setExperience,
+  setSkill,
 };
