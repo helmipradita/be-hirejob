@@ -14,7 +14,9 @@ CREATE TABLE working_experince(
     bulan_tahun VARCHAR NOT NULL
 );
 
-ALTER TABLE working_experince ADD COLUMN employee_id
+ALTER TABLE working_experince ADD employee_id VAR REFERENCES employee(id)
+
+
 
 CREATE TABLE employee(
     id SERIAL PRIMARY KEY,

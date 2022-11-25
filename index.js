@@ -9,6 +9,8 @@ const multer = require('multer')
 
 const mainRouter = require('./src/routes/index');
 
+const mainRouter = require('./src/routes/index');
+
 const app = express();
 const port = process.env.PORT;
 //working_experince dan employee
