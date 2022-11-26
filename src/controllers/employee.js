@@ -1,51 +1,40 @@
-/* eslint-disable no-unused-vars */
-//const { response } = require('../middleware/common');
 const  ModelEmployee = require('../models/employee')
 const pool = require('../config/db');
 const {response} = require ('../middleware/common')
-//const {cloudinary} = require('../middleware/cloudinary')
+const cloudinary = require('cloudinary')
 
 
 
 //untuk control
 const EmployeeController = {
     //untuk put diambil dari file index.js
-    update : (req,res,next) => {
-        const Port = process.env.PORT //env
-        //const Host = process.env.HOST //env
-        const portofolio = req.file.filename 
-        const uri = `http://localhost:${Port}/img/${portofolio}`
-        req.body.portofolio = uri
-        req.body.fullname = req.body.fullname
-        req.body.job_desk = req.body.job_desk
-        req.body.domisili = req.body.domisili
-        req.body.tempat_kerja = req.body.tempat_kerja
-        req.body.description = req.body.description
-        req.body.skill = req.body.skill
-        req.body.working_experince = req.body.working_experince
+    update : async (req,res,next) => {
+        try{
+            req.body.fullname = req.body.fullname
+            req.body.job_desk = req.body.job_desk
+            req.body.domisili = req.body.domisili
+            req.body.tempat_kerja = req.body.tempat_kerja
+            req.body.description = req.body.description
+            req.body.skill = req.body.skill
+            req.body.working_experince = req.body.working_experince
+            const uploadportofolio = await cloudinary.uploader.upload(req.file.path, {folder: 'portofolio'})
+            req.body.portofolio = uploadportofolio.url
 
-        ModelEmployee.updateEmployee(req.params.id,req.body)
-        .then((result) => response (res,200,true,result.rows,'update data success'))
-        .catch((err) => response(res,401,false,err,'update data fail'));
+            await ModelEmployee.updateEmployee(req.params.id, req.body)
+            return response (res,200,true,req.body,'update data success')
+  
+        }catch(e) {
+            return response(res,401,false,e,'update data fail');
+
+        }
     },
+
     //delete diambil dari file index.js
     delete : (req,res,next) => {
         ModelEmployee.deleteEmployee(req.params.id)
         .then((result) => response (res,200,true,result.rows,'delete data success'))
         .catch((err) => response(res,401,false,err,'delete data fail'));
     },
-
-    // const printResult = {};
-    // printResult.success = status;
-    // printResult.statusCode = statusCode;
-    // printResult.data = result || null;
-    // printResult.message = message || null;
-    //get diambil dari file index.js
-    // getEmployee : (req,res,next) => {
-    //     ModelEmployee.selectEmployee()
-    //     .then((result) => res.send({ result: result.rows }))
-    //     .catch((err) => res.send({ message: `error`, err }));
-    // },
 
     getEmployee: async(req, res, next) => {
 
@@ -67,23 +56,26 @@ const EmployeeController = {
         .catch((err) => response(res,401,false,err,'get data fail'));
     },
      //untuk post yang diambil dari file index.js
-     insert : (req,res,next) => {
-        const Port = process.env.PORT //env
-        //const Host = process.env.HOST //env
-        const portofolio = req.file.filename 
-        const uri = `http://localhost:${Port}/img/${portofolio}`
-        req.body.portofolio = uri
-        req.body.fullname = req.body.fullname
-        req.body.job_desk = req.body.job_desk
-        req.body.domisili = req.body.domisili
-        req.body.tempat_kerja = req.body.tempat_kerja
-        req.body.description = req.body.description
-        req.body.skill = req.body.skill
-        req.body.working_experince = req.body.working_experince
+     insert : async (req,res,next) => {
+        try{
+            req.body.fullname = req.body.fullname
+            req.body.job_desk = req.body.job_desk
+            req.body.domisili = req.body.domisili
+            req.body.tempat_kerja = req.body.tempat_kerja
+            req.body.description = req.body.description
+            req.body.skill = req.body.skill
+            req.body.working_experince = req.body.working_experince
+            const uploadportofolio = await cloudinary.uploader.upload(req.file.path, {folder: 'portofolio'})
+            req.body.portofolio = uploadportofolio.url
 
-        ModelEmployee.insertEmployee(req.body)
-        .then((result) => response (res,200,true,result.rows,'insert data success'))
-        .catch((err) => response(res,401,false,err,'insert data fail'));
+            await ModelEmployee.insertEmployee(req.body)
+            return response (res,200,true,req.body,'insert data success')
+  
+        }catch(e) {
+            return response(res,401,false,e,'insert data fail');
+
+        }
+        
     },
 }
 

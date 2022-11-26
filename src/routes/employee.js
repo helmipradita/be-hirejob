@@ -2,6 +2,7 @@ const express = require('express')
 const routerEmployee = express.Router()
 const {EmployeeController} = require('../controllers/employee')
 const {uploadPortofolio}  = require('../middleware/uploadPortofolio') 
+const {protect,role} = require ('./../middleware/auth')
 
 
 routerEmployee.get('/',EmployeeController.getEmployee)
@@ -12,3 +13,4 @@ routerEmployee.delete('/:id',EmployeeController.delete)
 
 
 module.exports = routerEmployee 
+ 
