@@ -68,19 +68,10 @@ const changePassword = (email, password) => {
     )
   );
 };
-const updateOtp = (email, otp) => {
-  return new Promise((resolve, reject) =>
-    Pool.query(
-      `UPDATE users SET otp='${otp}' WHERE email='${email}'`,
-      (err, result) => {
-        if (!err) {
-          resolve(result);
-        } else {
-          reject(err);
-        }
-      }
-    )
-  );
-};
 
-module.exports = { create, findEmail, verification, changePassword, updateOtp };
+module.exports = {
+  create,
+  findEmail,
+  verification,
+  changePassword,
+};

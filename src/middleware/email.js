@@ -16,7 +16,7 @@ module.exports = (email, subject, text) => {
   let mailOptions = {
     from: process.env.MAIL_USERNAME,
     to: email,
-    subject: `${subject} is your otp`,
+    subject: subject,
     text: text,
   };
 

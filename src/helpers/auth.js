@@ -17,4 +17,9 @@ const generateRefreshToken = (payload) => {
   return token;
 };
 
-module.exports = { generateToken, generateRefreshToken };
+const decodeToken = (token) => {
+  var decoded = jwt.verify(token, key);
+  return decoded;
+};
+
+module.exports = { generateToken, generateRefreshToken, decodeToken };
