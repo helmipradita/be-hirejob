@@ -53,7 +53,7 @@ const setExperience = ({
 }) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      'INSERT INTO tbl_experience( posisi,nama_perusahaan,bulan_tahun,deskripsi,employee_id) VALUES ($1,$2,$3,$4,$5)',
+      "INSERT INTO tbl_experience( posisi,nama_perusahaan,bulan_tahun,deskripsi,employee_id) VALUES ($1,$2,$3,$4,$5)",
       [posisi, nama_perusahaan, bulan_tahun, deskripsi, employee_id],
       (error, result) => {
         if (!error) {
@@ -69,7 +69,7 @@ const setExperience = ({
 const setSkill = ({ name, user_id }) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      'INSERT INTO tbl_skill(user_id, name) VALUES ($2, $1)',
+      "INSERT INTO tbl_skill(user_id, name) VALUES ($2, $1)",
       [name, user_id],
       (error, result) => {
         if (!error) {
@@ -82,10 +82,42 @@ const setSkill = ({ name, user_id }) => {
   });
 };
 
+const verification = (email) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE tbl_employee SET verif=1 WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
+const changePassword = (email, password) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE users SET password='${password}' WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
 module.exports = {
   register,
   findEmail,
   findById,
   setExperience,
   setSkill,
+  verification,
+  changePassword,
 };

@@ -54,7 +54,7 @@ const setHire = ({
 }) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      'INSERT INTO tbl_hire(id, tujuan, company_nama, company_email, company_telepon, deskripsi, company_id, employee_id)VALUES($1, $2, $3, $4, $5, $6, $7, $8)',
+      "INSERT INTO tbl_hire(id, tujuan, company_nama, company_email, company_telepon, deskripsi, company_id, employee_id)VALUES($1, $2, $3, $4, $5, $6, $7, $8)",
       [
         id,
         tujuan,
@@ -76,8 +76,40 @@ const setHire = ({
   });
 };
 
+const verification = (email) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE tbl_company SET verif=1 WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
+const changePassword = (email, password) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE users SET password='${password}' WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
 module.exports = {
   register,
   findEmail,
   setHire,
+  verification,
+  changePassword,
 };

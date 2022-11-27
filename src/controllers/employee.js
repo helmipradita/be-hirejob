@@ -5,11 +5,21 @@ const {
   findById,
   setExperience,
   setSkill,
+  verification,
+  changePassword,
 } = require(`../models/employee`);
-const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
-const { generateToken, refreshToken } = require(`../helpers/auth`);
+const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
+const {
+  generateToken,
+  generateRefreshToken,
+  decodeToken,
+} = require(`../helpers/auth`);
+const email = require("../middleware/email");
 const refreshTokens = [];
+
+const Port = process.env.PORT;
+const Host = process.env.HOST;
 
 const EmployeeController = {
   register: async (req, res, next) => {
@@ -18,16 +28,16 @@ const EmployeeController = {
     } = await findEmail(req.body.email);
 
     if (tbl_employee) {
-      return response(res, 404, false, 'email already use', ' register fail');
+      return response(res, 404, false, "email already use", " register fail");
     }
 
-    let digits = '0123456789';
-    let otp = '';
+    // create otp
+    let digits = "0123456789";
+    let otp = "";
     for (let i = 0; i < 6; i++) {
       otp += digits[Math.floor(Math.random() * 10)];
     }
 
-    let salt = bcrypt.genSaltSync(10);
     let password = bcrypt.hashSync(req.body.password);
     let data = {
       id: uuidv4(),
@@ -35,37 +45,45 @@ const EmployeeController = {
       email: req.body.email,
       telepon: req.body.telepon,
       password,
-      role: 'employee',
+      role: "employee",
       otp,
     };
     try {
       const result = await register(data);
       if (result) {
+        let verifUrl = `http://${Host}:${Port}/tbl_employee/${req.body.email}/${otp}`;
+        let text = `Hello ${req.body.fullname} \n Thank you for join us. Please confirm your email by clicking on the following link ${verifUrl}`;
+        const subject = `${otp} is your otp`;
+        let sendEmail = email(req.body.email, subject, text);
+        if (sendEmail == "email not sent!") {
+          return response(res, 404, false, null, "register fail");
+        }
         response(
           res,
           200,
           true,
           { email: data.email },
-          'register success please check your email'
+          "register success please check your email"
         );
       }
     } catch (err) {
-      response(res, 404, false, err, ' register fail');
+      response(res, 404, false, err, " register fail");
     }
   },
+
   login: async (req, res, next) => {
     let {
       rows: [tbl_employee],
     } = await findEmail(req.body.email);
 
     if (!tbl_employee) {
-      return response(res, 404, false, null, ' email not found');
+      return response(res, 404, false, null, " email not found");
     }
 
     const password = req.body.password;
     const validation = bcrypt.compareSync(password, tbl_employee.password);
     if (!validation) {
-      return response(res, 404, false, null, 'wrong password');
+      return response(res, 404, false, null, "wrong password");
     }
 
     delete tbl_employee.password;
@@ -77,13 +95,11 @@ const EmployeeController = {
       role: tbl_employee.role,
     };
     let accessToken = generateToken(payload);
-    let refToken = refreshToken(payload);
+    let refToken = generateRefreshToken(payload);
 
     tbl_employee.token = accessToken;
     tbl_employee.refreshToken = refToken;
-    refreshTokens.push(refreshToken);
-
-    response(res, 200, true, tbl_employee, 'login success');
+    response(res, 200, true, tbl_employee, "login success");
   },
   profile: async (req, res, next) => {
     const email = req.payload.email;
@@ -95,16 +111,16 @@ const EmployeeController = {
 
       if (tbl_employee === undefined) {
         res.json({
-          message: 'invalid token',
+          message: "invalid token",
         });
         return;
       }
 
       delete tbl_employee.password;
-      response(res, 200, true, tbl_employee, 'Get Data success');
+      response(res, 200, true, tbl_employee, "Get Data success");
     } catch (error) {
       console.log(error);
-      response(res, 404, false, 'Get Data fail');
+      response(res, 404, false, "Get Data fail");
     }
   },
   profileById: async (req, res, next) => {
@@ -117,16 +133,16 @@ const EmployeeController = {
 
       if (tbl_employee === undefined) {
         res.json({
-          message: 'invalid token',
+          message: "invalid token",
         });
         return;
       }
 
       delete tbl_employee.password;
-      response(res, 200, true, tbl_employee, 'Get Data success');
+      response(res, 200, true, tbl_employee, "Get Data success");
     } catch (error) {
       console.log(error);
-      response(res, 404, false, 'Get Data fail');
+      response(res, 404, false, "Get Data fail");
     }
   },
   insertExperience: async (req, res, next) => {
@@ -142,10 +158,10 @@ const EmployeeController = {
         employee_id,
       };
       await setExperience(dataExperience);
-      response(res, 200, true, dataExperience, 'Get Data success');
+      response(res, 200, true, dataExperience, "Get Data success");
     } catch (error) {
       console.log(error);
-      response(res, 404, false, 'Insert experience fail');
+      response(res, 404, false, "Insert experience fail");
     }
   },
   insertSkill: async (req, res, next) => {
@@ -159,11 +175,68 @@ const EmployeeController = {
       };
 
       setSkill(dataSkill);
-      response(res, 200, true, dataSkill, 'Insert skill success');
+      response(res, 200, true, dataSkill, "Insert skill success");
     } catch (error) {
       console.log(error);
-      response(res, 404, false, 'Insert skill fail');
+      response(res, 404, false, "Insert skill fail");
     }
+  },
+
+  verificationOtp: async (req, res) => {
+    const { email, otp } = req.body;
+    const {
+      rows: [tbl_employee],
+    } = await findEmail(email);
+    if (!tbl_employee) {
+      return response(res, 404, false, null, " email not found");
+    }
+
+    if (tbl_employee.otp == otp) {
+      const result = await verification(req.body.email);
+      return response(res, 200, true, result, " verification email success");
+    }
+    return response(
+      res,
+      404,
+      false,
+      null,
+      " wrong otp please check your email"
+    );
+  },
+
+  forgotPassword: async (req, res) => {
+    const {
+      rows: [tbl_employee],
+    } = await findEmail(req.body.email);
+    if (!tbl_employee) {
+      return response(res, 404, false, null, " email not found");
+    }
+    let payload = {
+      email: req.body.email,
+    };
+    const token = generateToken(payload);
+
+    let text = `Hello ${tbl_employee.fullname} \n please click link below to reset password http://localhost:8000/tbl_employee/resetPassword/${token}`;
+    const subject = `Reset Password`;
+    let sendEmail = email(req.body.email, subject, text);
+    if (sendEmail == "email not sent!") {
+      return response(res, 404, false, null, "email fail");
+    }
+    return response(res, 200, true, null, "send email success");
+  },
+
+  resetPassword: async (req, res) => {
+    const token = req.params.token;
+    const decoded = decodeToken(token);
+    const {
+      rows: [tbl_employee],
+    } = await findEmail(decoded.email);
+    if (!tbl_employee) {
+      return response(res, 404, false, null, " email not found");
+    }
+    let password = bcrypt.hashSync(req.body.password);
+    const result = await changePassword(decoded.email, password);
+    return response(res, 200, true, result, " change password email success");
   },
 };
 
