@@ -74,6 +74,7 @@ const CompanyController = {
     };
     let accessToken = generateToken(payload);
     let refToken = refreshToken(payload);
+    console.log(payload);
 
     tbl_company.token = accessToken;
     tbl_company.refreshToken = refToken;
@@ -82,37 +83,26 @@ const CompanyController = {
     response(res, 200, true, tbl_company, 'login success');
   },
   profile: async (req, res, next) => {
-    let {
-      rows: [tbl_company],
-    } = await findEmail(req.body.email);
+    const email = req.payload.email;
+    console.log(email);
 
-    if (!tbl_company) {
-      return response(res, 404, false, null, ' email not found');
-    }
-
-    let data = {
-      fullname: req.body.fullname,
-      email: req.body.email,
-      nama_perusahaan: req.body.nama_perusahaan,
-      jabatan: req.body.jabatan,
-      telepon: req.body.telepon,
-      password,
-      role: 'company',
-      otp,
-    };
     try {
-      const result = await register(data);
-      if (result) {
-        response(
-          res,
-          200,
-          true,
-          { email: data.email },
-          'register success please check your email'
-        );
+      let {
+        rows: [tbl_company],
+      } = await findEmail(email);
+
+      if (tbl_company === undefined) {
+        res.json({
+          message: 'invalid token',
+        });
+        return;
       }
-    } catch (err) {
-      response(res, 404, false, err, ' register fail');
+
+      delete tbl_company.password;
+      response(res, 200, true, tbl_company, 'Get Data success');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, 'Get Data fail');
     }
   },
   addHire: async (req, res, next) => {
