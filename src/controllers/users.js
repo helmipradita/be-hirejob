@@ -39,7 +39,6 @@ const UsersController = {
     }
 
     let password = bcrypt.hashSync(req.body.password);
-    let confirm_password = bcrypt.hashSync(req.body.confirm_password);
     let data = {
       id: uuidv4(),
       name: req.body.name,
@@ -48,7 +47,6 @@ const UsersController = {
       company: req.body.company,
       position: req.body.position,
       password,
-      confirm_password,
       role,
       otp,
     };
