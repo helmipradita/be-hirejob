@@ -9,13 +9,14 @@ const create = (data) => {
     company,
     position,
     password,
+    confirm_password,
     role,
     otp,
   } = data;
   console.log(data);
   return new Promise((resolve, reject) =>
     Pool.query(
-      `INSERT INTO users(id,name,email,phone_number,company,position,password,role,verif,otp) VALUES('${id}','${name}','${email}','${phone_number}','${company}','${position}','${password}','${role}',0,${otp})`,
+      `INSERT INTO users(id,name,email,phone_number,company,position,password,confirm_password,role,verif,otp) VALUES('${id}','${name}','${email}','${phone_number}','${company}','${position}','${password}','${confirm_password}','${role}',0,${otp})`,
       (err, result) => {
         if (!err) {
           resolve(result);
