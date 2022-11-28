@@ -265,7 +265,7 @@ const EmployeeController = {
   },
 
   resetPassword: async (req, res) => {
-    const token = req.params.token;
+    const token = req.body.token;
     const decoded = decodeToken(token);
     const {
       rows: [tbl_employee],
