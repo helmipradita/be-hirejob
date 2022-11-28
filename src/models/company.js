@@ -163,7 +163,7 @@ const getList = ({ limit, offset, sortBy, sortOrder, search }) => {
 //   return new Promise((resolve, reject) => {
 //     Pool.query(
 //       `SELECT tbl_employee.fullname,tbl_employee.jobdesk,tbl_employee.domisili, tbl_skill.name AS skill FROM tbl_employee INNER JOIN tbl_skill
-//       ON tbl_employee.id = tbl_skill.user_id WHERE tbl_employee.fullname ILIKE '%${search}%' ORDER BY ${sortBy} ${sortOrder} LIMIT ${limit} OFFSET ${offset}`,
+//       ON tbl_employee.id = tbl_skill.employee_id WHERE tbl_employee.fullname ILIKE '%${search}%' ORDER BY ${sortBy} ${sortOrder} LIMIT ${limit} OFFSET ${offset}`,
 //       (err, result) => {
 //         if (!err) {
 //           resolve(result.rows);
@@ -198,7 +198,7 @@ const getEmployeeById = async (id) => {
 const getDataSkillId = (id) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      'SELECT * FROM tbl_skill WHERE user_id = $1',
+      'SELECT * FROM tbl_skill WHERE employee_id = $1',
       [id],
       (error, result) => {
         if (!error) {

@@ -5,6 +5,8 @@ const {
   findById,
   setExperience,
   setSkill,
+  getSkillData,
+  getPortofolioData,
   verification,
   changePassword,
   updateDataProfile,
@@ -193,7 +195,26 @@ const EmployeeController = {
       response(res, 404, false, 'Insert skill fail');
     }
   },
+  skill: async (req, res, next) => {
+    try {
+      const id = req.payload.id;
 
+      const result = await getSkillData(id);
+      response(res, 200, true, result.rows, 'Get skill success');
+    } catch (error) {
+      response(res, 404, false, 'Get skill fail');
+    }
+  },
+  portofolio: async (req, res, next) => {
+    try {
+      const id = req.payload.id;
+
+      const result = await getPortofolioData(id);
+      response(res, 200, true, result.rows, 'Get skill success');
+    } catch (error) {
+      response(res, 404, false, 'Get skill fail');
+    }
+  },
   verificationOtp: async (req, res) => {
     const { email, otp } = req.body;
     const {

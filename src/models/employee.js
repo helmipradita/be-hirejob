@@ -98,6 +98,38 @@ const setSkill = ({ name, employee_id }) => {
   });
 };
 
+const getSkillData = (id) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'SELECT * FROM tbl_skill WHERE employee_id = $1',
+      [id],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+const getPortofolioData = (id) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'SELECT * FROM tbl_portofolio WHERE employee_id = $1',
+      [id],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
 const verification = (email) => {
   return new Promise((resolve, reject) =>
     Pool.query(
@@ -150,6 +182,8 @@ module.exports = {
   findById,
   setExperience,
   setSkill,
+  getSkillData,
+  getPortofolioData,
   verification,
   changePassword,
   updateDataProfile,
