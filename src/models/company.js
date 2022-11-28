@@ -118,7 +118,7 @@ const update = (
 const selectDataEmployee = ({limit,offset,sort,sortBy,search}) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      `SELECT tbl_company.id,tbl_company.fullname,tbl_company.email,tbl_company.nama_perusahaan,tbl_company.jabatan,tbl_company.telepon,tbl_company.password,tbl_company.bidang,tbl_company.kota,tbl_company.deskripsi,tbl_company.instagram,tbl_company.linkedin,tbl_company.role,tbl_company.verif,tbl_company.otp FROM tbl_company WHERE (tbl_company.fullname) ILIKE ('%${search}%') ORDER BY tbl_company.${sortBy} ${sort} LIMIT ${limit} OFFSET ${offset}`,
+      `SELECT tbl_employee.id,tbl_employee.fullname,tbl_employee.email,tbl_employee.telepon,tbl_employee.password,tbl_employee.jobdesk,tbl_employee.domisili,tbl_employee.tempat_kerja,tbl_employee.deskripsi,tbl_employee.role,tbl_employee.verif,tbl_employee.otp WHERE (tbl_employee.fullname) ILIKE ('%${search}%') ORDER BY tbl_employee.${sortBy} ${sort} LIMIT ${limit} OFFSET ${offset}`,
       (err, result) => {
         if (!err) {
           resolve(result);
