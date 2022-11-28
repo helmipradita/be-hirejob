@@ -289,13 +289,25 @@ const CompanyController = {
         offset,
       });
 
+      const {
+        rows: [count],
+      } = await countAll();
+      const totalData =
+        search === '' ? parseInt(count.total) : result.rows.length;
+      const totalPage = Math.ceil(totalData / limit);
+      const pagination = {
+        currentPage: page,
+        limit,
+        totalData,
+        totalPage,
+      };
       if (result.length > 0) {
-        response(res, 200, true, result, 'Get Data success');
+        response(res, 200, true, result, 'Get Data success', pagination);
       } else {
-        response(res, 404, false, null, ' Get Data fail');
+        response(res, 404, false, null, 'get data failed');
       }
     } catch (error) {
-      response(res, 404, false, null, ' Get Data fail');
+      response(res, 404, false, null, ' Get Data not found');
     }
   },
   getEmpById: async (req, res, next) => {
