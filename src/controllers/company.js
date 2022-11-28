@@ -6,6 +6,7 @@ const {
   verification,
   changePassword,
   update,
+  selectDataEmployee,
 } = require(`../models/company`);
 
 const bcrypt = require('bcryptjs');
@@ -265,6 +266,24 @@ const CompanyController = {
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
     return response(res, 200, true, result.body, ' change password success');
+  },
+
+
+   getAllEmployee: async (req, res, next) => {
+    try {
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
+      const offset = (page-1) * limit;
+      const sortBy = req.query.sortBy || 'fullname';
+      const sort = req.query.sort || 'ASC';
+      const search = req.query.search || '';
+      const result = await selectDataEmployee({limit,offset,sort,sortBy,search,page});
+
+      return response(res, 200, true, result.rows, 'get employee success');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, 'get employee fail');
+    }
   },
 };
 
