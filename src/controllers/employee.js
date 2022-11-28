@@ -9,26 +9,24 @@ const {
   verification,
   changePassword,
   updateDataProfile,
-  setPortofolio
-
+  setPortofolio,
 } = require(`../models/employee`);
-const bcrypt = require("bcryptjs");
-const { v4: uuidv4 } = require("uuid");
+const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 const {
   generateToken,
   generateRefreshToken,
   decodeToken,
 } = require(`../helpers/auth`);
-const email = require("../middleware/email");
+const email = require('../middleware/email');
 const refreshTokens = [];
 const cloudinary = require('cloudinary').v2;
 
-
 cloudinary.config({
-    cloud_name :process.env.CLOUD_NAME,
-    api_key    :process.env.CLOUDINARY_API_KEY,
-    api_secret :process.env.CLOUDINARY_API_SECRET
-})
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const Port = process.env.PORT;
 const Host = process.env.HOST;
@@ -40,12 +38,12 @@ const EmployeeController = {
     } = await findEmail(req.body.email);
 
     if (tbl_employee) {
-      return response(res, 404, false, "email already use", " register fail");
+      return response(res, 404, false, 'email already use', ' register fail');
     }
 
     // create otp
-    let digits = "0123456789";
-    let otp = "";
+    let digits = '0123456789';
+    let otp = '';
     for (let i = 0; i < 6; i++) {
       otp += digits[Math.floor(Math.random() * 10)];
     }
@@ -57,7 +55,7 @@ const EmployeeController = {
       email: req.body.email,
       telepon: req.body.telepon,
       password,
-      role: "employee",
+      role: 'employee',
       otp,
     };
     try {
@@ -67,19 +65,19 @@ const EmployeeController = {
         let text = `Hello ${req.body.fullname} \n Thank you for join us. Please confirm your email by clicking on the following link ${verifUrl}`;
         const subject = `${otp} is your otp`;
         let sendEmail = email(req.body.email, subject, text);
-        if (sendEmail == "email not sent!") {
-          return response(res, 404, false, null, "register fail");
+        if (sendEmail == 'email not sent!') {
+          return response(res, 404, false, null, 'register fail');
         }
         response(
           res,
           200,
           true,
           { email: data.email },
-          "register success please check your email"
+          'register success please check your email'
         );
       }
     } catch (err) {
-      response(res, 404, false, err, " register fail");
+      response(res, 404, false, err, ' register fail');
     }
   },
 
@@ -89,13 +87,13 @@ const EmployeeController = {
     } = await findEmail(req.body.email);
 
     if (!tbl_employee) {
-      return response(res, 404, false, null, " email not found");
+      return response(res, 404, false, null, ' email not found');
     }
 
     const password = req.body.password;
     const validation = bcrypt.compareSync(password, tbl_employee.password);
     if (!validation) {
-      return response(res, 404, false, null, "wrong password");
+      return response(res, 404, false, null, 'wrong password');
     }
 
     delete tbl_employee.password;
@@ -111,7 +109,7 @@ const EmployeeController = {
 
     tbl_employee.token = accessToken;
     tbl_employee.refreshToken = refToken;
-    response(res, 200, true, tbl_employee, "login success");
+    response(res, 200, true, tbl_employee, 'login success');
   },
   profile: async (req, res, next) => {
     const email = req.payload.email;
@@ -123,16 +121,16 @@ const EmployeeController = {
 
       if (tbl_employee === undefined) {
         res.json({
-          message: "invalid token",
+          message: 'invalid token',
         });
         return;
       }
 
       delete tbl_employee.password;
-      response(res, 200, true, tbl_employee, "Get Data success");
+      response(res, 200, true, tbl_employee, 'Get Data success');
     } catch (error) {
       console.log(error);
-      response(res, 404, false, "Get Data fail");
+      response(res, 404, false, 'Get Data fail');
     }
   },
   profileById: async (req, res, next) => {
@@ -145,16 +143,16 @@ const EmployeeController = {
 
       if (tbl_employee === undefined) {
         res.json({
-          message: "invalid token",
+          message: 'invalid token',
         });
         return;
       }
 
       delete tbl_employee.password;
-      response(res, 200, true, tbl_employee, "Get Data success");
+      response(res, 200, true, tbl_employee, 'Get Data success');
     } catch (error) {
       console.log(error);
-      response(res, 404, false, "Get Data fail");
+      response(res, 404, false, 'Get Data fail');
     }
   },
   insertExperience: async (req, res, next) => {
@@ -170,10 +168,10 @@ const EmployeeController = {
         employee_id,
       };
       await setExperience(dataExperience);
-      response(res, 200, true, dataExperience, "Get Data success");
+      response(res, 200, true, dataExperience, 'Get Data success');
     } catch (error) {
       console.log(error);
-      response(res, 404, false, "Insert experience fail");
+      response(res, 404, false, 'Insert experience fail');
     }
   },
   insertSkill: async (req, res, next) => {
@@ -187,10 +185,10 @@ const EmployeeController = {
       };
 
       setSkill(dataSkill);
-      response(res, 200, true, dataSkill, "Insert skill success");
+      response(res, 200, true, dataSkill, 'Insert skill success');
     } catch (error) {
       console.log(error);
-      response(res, 404, false, "Insert skill fail");
+      response(res, 404, false, 'Insert skill fail');
     }
   },
 
@@ -200,19 +198,19 @@ const EmployeeController = {
       rows: [tbl_employee],
     } = await findEmail(email);
     if (!tbl_employee) {
-      return response(res, 404, false, null, " email not found");
+      return response(res, 404, false, null, ' email not found');
     }
 
     if (tbl_employee.otp == otp) {
       const result = await verification(req.body.email);
-      return response(res, 200, true, result, " verification email success");
+      return response(res, 200, true, result, ' verification email success');
     }
     return response(
       res,
       404,
       false,
       null,
-      " wrong otp please check your email"
+      ' wrong otp please check your email'
     );
   },
 
@@ -221,7 +219,7 @@ const EmployeeController = {
       rows: [tbl_employee],
     } = await findEmail(req.body.email);
     if (!tbl_employee) {
-      return response(res, 404, false, null, " email not found");
+      return response(res, 404, false, null, ' email not found');
     }
     let payload = {
       email: req.body.email,
@@ -231,10 +229,10 @@ const EmployeeController = {
     let text = `Hello ${tbl_employee.fullname} \n please click link below to reset password http://localhost:8000/tbl_employee/resetPassword/${token}`;
     const subject = `Reset Password`;
     let sendEmail = email(req.body.email, subject, text);
-    if (sendEmail == "email not sent!") {
-      return response(res, 404, false, null, "email fail");
+    if (sendEmail == 'email not sent!') {
+      return response(res, 404, false, null, 'email fail');
     }
-    return response(res, 200, true, null, "send email success");
+    return response(res, 200, true, null, 'send email success');
   },
 
   resetPassword: async (req, res) => {
@@ -244,25 +242,23 @@ const EmployeeController = {
       rows: [tbl_employee],
     } = await findEmail(decoded.email);
     if (!tbl_employee) {
-      return response(res, 404, false, null, " email not found");
+      return response(res, 404, false, null, ' email not found');
     }
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
-    return response(res, 200, true, result, " change password email success");
+    return response(res, 200, true, result, ' change password email success');
   },
 
   updateProfile: async (req, res, next) => {
-    
     try {
+      const { id, jobdesk, domisili, tempat_kerja, deskripsi } = req.body;
 
-      //const { id,jobdesk, domisili, tempat_kerja, deskripsi } = req.body;
-  
       const dataProfile = {
-        id : req.body.id,
-        jobdesk : req.body.jobdesk,
-        domisili : req.body.domisili,
-        tempat_kerja : req.body.tempat_kerja,
-        deskripsi : req.body.deskripsi
+        id: req.body.id,
+        jobdesk: req.body.jobdesk,
+        domisili: req.body.domisili,
+        tempat_kerja: req.body.tempat_kerja,
+        deskripsi: req.body.deskripsi,
       };
       await updateDataProfile(req.params.id, req.body);
       response(res, 200, true, dataProfile, 'Update Data success sakali');
@@ -274,20 +270,22 @@ const EmployeeController = {
 
   insertPortofolio: async (req, res, next) => {
     try {
-      //const employee_id = req.payload.id;
-       req.body.nama_app =  req.body.nama_app
-       req.body.link_repo = req.body.link_repo
-       req.body.tipe_repo = req.body.tipe_repo
-       const uploadPorto = await cloudinary.uploader.upload(req.file.path, {folder : 'portofolio'})
-       req.body.photo = uploadPorto.url
-       console.log(uploadPorto)
-       req.body.employee_id = req.body.employee_id
-      
-      await setPortofolio(req.body);
-      return response(res, 200, true, req.body, 'Insert Portofolio success');
+      const { nama_app, link_repo, tipe_repo } = req.body;
+      const employee_id = req.payload.id;
+
+      const dataPortofolio = {
+        nama_app,
+        link_repo,
+        tipe_repo,
+        photo: req.file.path,
+        employee_id,
+      };
+
+      setPortofolio(dataPortofolio);
+      response(res, 200, true, dataPortofolio, 'Insert portofolio success');
     } catch (error) {
       console.log(error);
-      return response(res, 404, false,error, 'Insert Portofolio fail');
+      response(res, 404, false, 'Insert protofolio fail');
     }
   },
 };
