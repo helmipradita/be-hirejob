@@ -11,6 +11,8 @@ router.post('/forgotPassword', CompanyController.forgotPassword);
 router.post('/resetPassword/:token', CompanyController.resetPassword);
 
 //Profile
+router.get('/', CompanyController.getEmp);
+router.get('/:id', protect, CompanyController.getEmpById);
 router.get('/profile', protect, CompanyController.profile);
 router.put(`/:id`, protect, CompanyController.updateProfile);
 router.post('/hire', protect, CompanyController.addHire);

@@ -144,6 +144,57 @@ const changePassword = (email, password) => {
   );
 };
 
+const getList = ({ limit, offset, sortBy, sortOrder, search }) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      `SELECT * FROM tbl_employee WHERE fullname ILIKE '%${search}%' ORDER BY ${sortBy} ${sortOrder} LIMIT ${limit} OFFSET ${offset}`,
+      (err, result) => {
+        if (!err) {
+          resolve(result.rows);
+        } else {
+          reject(new Error(err));
+        }
+      }
+    );
+  });
+};
+
+// const getList = ({ limit, offset, sortBy, sortOrder, search }) => {
+//   return new Promise((resolve, reject) => {
+//     Pool.query(
+//       `SELECT tbl_employee.fullname,tbl_employee.jobdesk,tbl_employee.domisili, tbl_skill.name AS skill FROM tbl_employee INNER JOIN tbl_skill
+//       ON tbl_employee.id = tbl_skill.user_id WHERE tbl_employee.fullname ILIKE '%${search}%' ORDER BY ${sortBy} ${sortOrder} LIMIT ${limit} OFFSET ${offset}`,
+//       (err, result) => {
+//         if (!err) {
+//           resolve(result.rows);
+//         } else {
+//           reject(new Error(err));
+//         }
+//       }
+//     );
+//   });
+// };
+
+const countAll = () => {
+  return Pool.query('SELECT COUNT(*) AS total FROM tbl_employee');
+};
+
+const getEmployeeById = async (id) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'SELECT * FROM tbl_employee WHERE id = $1',
+      [id],
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   register,
   findEmail,
@@ -151,4 +202,7 @@ module.exports = {
   update,
   verification,
   changePassword,
+  countAll,
+  getList,
+  getEmployeeById,
 };

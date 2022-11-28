@@ -6,6 +6,9 @@ const {
   verification,
   changePassword,
   update,
+  countAll,
+  getList,
+  getEmployeeById,
 } = require(`../models/company`);
 
 const bcrypt = require('bcryptjs');
@@ -265,6 +268,55 @@ const CompanyController = {
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
     return response(res, 200, true, result.body, ' change password success');
+  },
+  getEmp: async (req, res, next) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 5;
+      const sortBy = req.query.sortBy || 'fullname';
+      const sortOrder = req.query.sortOrder || 'ASC';
+      const search = req.query.search || '';
+
+      const offset = (page - 1) * limit;
+
+      const result = await getList({
+        search,
+        sortBy,
+        sortOrder,
+        limit,
+        offset,
+      });
+
+      if (result.length > 0) {
+        response(res, 200, true, result, 'Get Data success');
+      } else {
+        response(res, 404, false, null, ' Get Data fail');
+      }
+    } catch (error) {
+      response(res, 404, false, null, ' Get Data fail');
+    }
+  },
+  getEmpById: async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+      const {
+        rows: [tbl_employee],
+      } = await getEmployeeById(id);
+
+      if (tbl_employee === undefined) {
+        res.json({
+          message: 'invalid token',
+        });
+        return;
+      }
+
+      delete tbl_employee.password;
+      response(res, 200, true, tbl_employee, 'Get Data success');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, null, ' Get Data fail');
+    }
   },
 };
 
