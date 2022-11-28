@@ -102,7 +102,9 @@ const EmployeeController = {
     response(res, 200, true, tbl_employee, "login success");
   },
   profile: async (req, res, next) => {
-    const email = req.payload.email;
+    let {
+      rows: [tbl_employee],
+    } = await findEmail(req.body.email);
 
     try {
       const {
@@ -116,7 +118,9 @@ const EmployeeController = {
         return;
       }
 
-      delete tbl_employee.password;
+      let accessToken = generateToken(payload);
+
+      tbl_employee.token = accessToken;
       response(res, 200, true, tbl_employee, "Get Data success");
     } catch (error) {
       console.log(error);
@@ -226,7 +230,7 @@ const EmployeeController = {
   },
 
   resetPassword: async (req, res) => {
-    const token = req.params.token;
+    const token = req.body.token;
     const decoded = decodeToken(token);
     const {
       rows: [tbl_employee],
@@ -236,7 +240,7 @@ const EmployeeController = {
     }
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
-    return response(res, 200, true, result, " change password email success");
+    return response(res, 200, true, result, " change password  success");
   },
 };
 

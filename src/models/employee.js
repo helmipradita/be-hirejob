@@ -100,7 +100,7 @@ const verification = (email) => {
 const changePassword = (email, password) => {
   return new Promise((resolve, reject) =>
     Pool.query(
-      `UPDATE users SET password='${password}' WHERE email='${email}'`,
+      `UPDATE tbl_employee SET password='${password}' WHERE email='${email}'`,
       (err, result) => {
         if (!err) {
           resolve(result);
