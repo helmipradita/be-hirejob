@@ -1,5 +1,5 @@
 const { response } = require(`../middleware/common`);
-const cloudinary = require ('cloudinary')
+//const cloudinary = require ('../middleware/cloudinary')
 const {
   register,
   findEmail,
@@ -13,6 +13,14 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { generateToken, refreshToken } = require(`../helpers/auth`);
 const refreshTokens = [];
+const cloudinary = require('cloudinary').v2;
+
+
+cloudinary.config({
+    cloud_name :process.env.CLOUD_NAME,
+    api_key    :process.env.CLOUDINARY_API_KEY,
+    api_secret :process.env.CLOUDINARY_API_SECRET
+})
 
 const EmployeeController = {
   register: async (req, res, next) => {
@@ -170,7 +178,9 @@ const EmployeeController = {
   },
 
   updateProfile: async (req, res, next) => {
+    
     try {
+
       //const { id,jobdesk, domisili, tempat_kerja, deskripsi } = req.body;
   
       const dataProfile = {
@@ -190,14 +200,15 @@ const EmployeeController = {
 
   insertPortofolio: async (req, res, next) => {
     try {
-       req.body.id = req.body.id
+      //const employee_id = req.payload.id;
        req.body.nama_app =  req.body.nama_app
        req.body.link_repo = req.body.link_repo
        req.body.tipe_repo = req.body.tipe_repo
        const uploadPorto = await cloudinary.uploader.upload(req.file.path, {folder : 'portofolio'})
        req.body.photo = uploadPorto.url
+       console.log(uploadPorto)
        req.body.employee_id = req.body.employee_id
-        
+      
       await setPortofolio(req.body);
       return response(res, 200, true, req.body, 'Insert Portofolio success');
     } catch (error) {

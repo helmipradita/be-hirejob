@@ -100,10 +100,10 @@ const setSkill = ({ name, user_id }) => {
 };
 
 const setPortofolio = (data) => {
-  const {id,nama_app,link_repo,tipe_repo,photo,employee_id} = data;
+  const {nama_app,link_repo,tipe_repo,photo,employee_id} = data;
   return new Promise((resolve, reject) => {
     Pool.query(
-      `INSERT INTO tbl_portofolio(id,nama_app,link_repo,tipe_repo,photo,employee_id) VALUES (${id},'${nama_app}','${link_repo}','${tipe_repo}','${photo}',${employee_id})`,
+      `INSERT INTO tbl_portofolio(nama_app,link_repo,tipe_repo,photo,employee_id) VALUES ('${nama_app}','${link_repo}','${tipe_repo}','${photo}','${employee_id}')`,
       (error, result) => {
         if (!error) {
           resolve(result);
