@@ -18,7 +18,7 @@ const register = (data) => {
 };
 
 const updateDataProfile = (data) => {
-  const { id,jobdesk,domisili,tempat_kerja,deskripsi } = data;
+  const { id, jobdesk, domisili, tempat_kerja, deskripsi } = data;
   return new Promise((resolve, reject) =>
     Pool.query(
       `UPDATE tbl_employee SET id='${id}',jobdesk='${jobdesk}',domisili='${domisili}',tempat_kerja ='${tempat_kerja}',deskripsi='${deskripsi}' where id='${id}'`,
@@ -32,7 +32,6 @@ const updateDataProfile = (data) => {
     )
   );
 };
-
 
 const findEmail = (email) => {
   return new Promise((resolve, reject) =>
@@ -70,7 +69,7 @@ const setExperience = ({
 }) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      "INSERT INTO tbl_experience( posisi,nama_perusahaan,bulan_tahun,deskripsi,employee_id) VALUES ($1,$2,$3,$4,$5)",
+      'INSERT INTO tbl_experience( posisi,nama_perusahaan,bulan_tahun,deskripsi,employee_id) VALUES ($1,$2,$3,$4,$5)',
       [posisi, nama_perusahaan, bulan_tahun, deskripsi, employee_id],
       (error, result) => {
         if (!error) {
@@ -86,7 +85,7 @@ const setExperience = ({
 const setSkill = ({ name, user_id }) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      "INSERT INTO tbl_skill(user_id, name) VALUES ($2, $1)",
+      'INSERT INTO tbl_skill(user_id, name) VALUES ($2, $1)',
       [name, user_id],
       (error, result) => {
         if (!error) {
@@ -117,7 +116,7 @@ const verification = (email) => {
 const changePassword = (email, password) => {
   return new Promise((resolve, reject) =>
     Pool.query(
-      `UPDATE users SET password='${password}' WHERE email='${email}'`,
+      `UPDATE tbl_employee SET password='${password}' WHERE email='${email}'`,
       (err, result) => {
         if (!err) {
           resolve(result);
@@ -130,7 +129,7 @@ const changePassword = (email, password) => {
 };
 
 const setPortofolio = (data) => {
-  const {nama_app,link_repo,tipe_repo,photo,employee_id} = data;
+  const { nama_app, link_repo, tipe_repo, photo, employee_id } = data;
   return new Promise((resolve, reject) => {
     Pool.query(
       `INSERT INTO tbl_portofolio(nama_app,link_repo,tipe_repo,photo,employee_id) VALUES ('${nama_app}','${link_repo}','${tipe_repo}','${photo}','${employee_id}')`,
@@ -154,5 +153,5 @@ module.exports = {
   verification,
   changePassword,
   updateDataProfile,
-  setPortofolio
+  setPortofolio,
 };

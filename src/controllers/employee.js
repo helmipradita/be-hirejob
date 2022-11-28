@@ -203,7 +203,13 @@ const EmployeeController = {
 
     if (tbl_employee.otp == otp) {
       const result = await verification(req.body.email);
-      return response(res, 200, true, result, ' verification email success');
+      return response(
+        res,
+        200,
+        true,
+        'activated',
+        ' verification email success'
+      );
     }
     return response(
       res,
@@ -246,7 +252,7 @@ const EmployeeController = {
     }
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
-    return response(res, 200, true, result, ' change password email success');
+    return response(res, 200, true, result.body, ' change password success');
   },
 
   updateProfile: async (req, res, next) => {
