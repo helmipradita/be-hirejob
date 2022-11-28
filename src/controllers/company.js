@@ -1,5 +1,5 @@
 const { response } = require(`../middleware/common`);
-const { register, findEmail, setHire } = require(`../models/company`);
+const { register, findEmail, setHire, update } = require(`../models/company`);
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const { generateToken, refreshToken } = require(`../helpers/auth`);
@@ -133,6 +133,39 @@ const CompanyController = {
     } catch (error) {
       console.log(error);
       response(res, 404, false, 'Insert Hire fail');
+    }
+  },
+  updateProfile: async (req, res, next) => {
+    try {
+      const id = req.payload.id;
+      const {
+        nama_perusahaan,
+        bidang,
+        kota,
+        deskripsi,
+        email,
+        instagram,
+        telepon,
+        linkedin,
+      } = req.body;
+
+      const data = {
+        nama_perusahaan,
+        bidang,
+        kota,
+        deskripsi,
+        email,
+        instagram,
+        telepon,
+        linkedin,
+      };
+
+      await update(data, id);
+      // response(res, data, 200, 'update profile success');
+      response(res, 200, true, data, 'update profile success');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, 'Update profile fail');
     }
   },
 };

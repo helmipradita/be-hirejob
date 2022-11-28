@@ -10,6 +10,6 @@ router.post('/login', CompanyController.login);
 //Profile
 router.get('/profile', protect, CompanyController.profile);
 router.post('/hire', protect, CompanyController.addHire);
-// router.get(`/`, protect, CompanyController.getHire);
+router.put(`/:id`, protect, CompanyController.updateProfile);
 
 module.exports = router;
