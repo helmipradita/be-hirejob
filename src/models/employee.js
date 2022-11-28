@@ -17,6 +17,22 @@ const register = (data) => {
   );
 };
 
+const updateDataProfile = (data) => {
+  const { id, jobdesk, domisili, tempat_kerja, deskripsi } = data;
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE tbl_employee SET id='${id}',jobdesk='${jobdesk}',domisili='${domisili}',tempat_kerja ='${tempat_kerja}',deskripsi='${deskripsi}' where id='${id}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
 const findEmail = (email) => {
   return new Promise((resolve, reject) =>
     Pool.query(
@@ -82,10 +98,60 @@ const setSkill = ({ name, user_id }) => {
   });
 };
 
+const verification = (email) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE tbl_employee SET verif=1 WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
+const changePassword = (email, password) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE tbl_employee SET password='${password}' WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
+const setPortofolio = (data) => {
+  const { nama_app, link_repo, tipe_repo, photo, employee_id } = data;
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      `INSERT INTO tbl_portofolio(nama_app,link_repo,tipe_repo,photo,employee_id) VALUES ('${nama_app}','${link_repo}','${tipe_repo}','${photo}','${employee_id}')`,
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   register,
   findEmail,
   findById,
   setExperience,
   setSkill,
+  verification,
+  changePassword,
+  updateDataProfile,
+  setPortofolio,
 };

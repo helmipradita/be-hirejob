@@ -91,7 +91,6 @@ const update = (
 ) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      // 'UPDATE tbl_company SET full_name = COALESCE($1, full_name), corps_name = COALESCE($2, corps_name), position = COALESCE($3, position), hp = COALESCE($4, hp), corps_description = COALESCE($5, corps_description), instagram = COALESCE($6, instagram), linkedin = COALESCE($7, linkedin), address = COALESCE($8, address) WHERE id = $9',
       'UPDATE tbl_company SET nama_perusahaan = $1, bidang = $2, kota = $3, deskripsi = $4,  email = $5, instagram = $6, telepon = $7, linkedin = $8 WHERE id = $9;',
       [
         nama_perusahaan,
@@ -115,9 +114,41 @@ const update = (
   });
 };
 
+const verification = (email) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE tbl_company SET verif=1 WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
+const changePassword = (email, password) => {
+  return new Promise((resolve, reject) =>
+    Pool.query(
+      `UPDATE tbl_company SET password='${password}' WHERE email='${email}'`,
+      (err, result) => {
+        if (!err) {
+          resolve(result);
+        } else {
+          reject(err);
+        }
+      }
+    )
+  );
+};
+
 module.exports = {
   register,
   findEmail,
   setHire,
   update,
+  verification,
+  changePassword,
 };

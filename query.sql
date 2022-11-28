@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+-- Active: 1669270835800@@topsy.db.elephantsql.com@5432@ryfxunak@public
+create table test(id INT, name VARCHAR(35));
+
+CREATE TABLE users(id VARCHAR NOT NULL PRIMARY KEY, name VARCHAR NOT NULL, email TEXT NOT NULL,  phone_number VARCHAR, company VARCHAR(50), position VARCHAR(50), password TEXT NOT NULL, role VARCHAR, otp VARCHAR, verif VARCHAR(1));
+
+=======
+>>>>>>> origin/dev-sri
 -- Active: 1669203562756@@topsy.db.elephantsql.com@5432@ryfxunak
 -- Active: 1666321324503@@127.0.0.1@5432@helmi@public
 
@@ -31,6 +39,8 @@ CREATE TABLE tbl_experience (
 	employee_id VARCHAR
 );
 
+
+
 CREATE TABLE tbl_portofolio (
     id SERIAL PRIMARY KEY,
     nama_app VARCHAR,
@@ -39,6 +49,19 @@ CREATE TABLE tbl_portofolio (
 	photo VARCHAR,
 	employee_id VARCHAR
 );
+
+CREATE TABLE tbl_portofolio1 (
+    id SERIAL PRIMARY KEY,
+    nama_app VARCHAR,
+	link_repo VARCHAR,
+	tipe_repo VARCHAR,
+	photo VARCHAR,
+	employee_id VARCHAR REFERENCES tbl_employee(id)
+);
+
+
+
+
 
 CREATE TABLE tbl_company (
     id VARCHAR PRIMARY KEY,

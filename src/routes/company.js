@@ -6,6 +6,9 @@ const { protect } = require('../middleware/auth');
 //Auth
 router.post('/register', CompanyController.register);
 router.post('/login', CompanyController.login);
+router.post('/verificationOtp', CompanyController.verificationOtp);
+router.post('/forgotPassword', CompanyController.forgotPassword);
+router.post('/resetPassword/:token', CompanyController.resetPassword);
 
 //Profile
 router.get('/profile', protect, CompanyController.profile);
