@@ -14,6 +14,7 @@ const port = process.env.PORT;
 const working_experince = require('./src/routes/working_experince')
 const employee = require('./src/routes/employee');
 
+
 app.use(cors());
 app.use(morgan('dev')); 
 app.use(bodyParser.json());
@@ -26,6 +27,7 @@ app.use('/image',express.static('./uploadPortofolio'))
 //working_experince dan employee
 app.use('/working_experince',working_experince)
 app.use('/employee',employee)
+
 
 
 

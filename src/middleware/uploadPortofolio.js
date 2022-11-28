@@ -6,18 +6,7 @@ const path = require('path')
 
 let maxSize = 1024 * 1024 *2
 const uploadPortofolio =multer ({
-    storage : multer.diskStorage({
-        //untuk menyimpan file dalam directory (upload)
-        destination: function (req,file,cb){
-            cb(null,'./uploadPortofolio')
-        },
-    
-        //nama file yang akan disimpan dalam destination
-        filename: function (req,file,cb){
-            const uniq = Date.now() + Math.round(Math.random() * 1E9)
-            cb(null,file.fieldname+'-'+uniq+ path.extname(file.originalname))
-        }
-    }),
+    storage : multer.diskStorage({}),
     
     fileFilter : (req,file,cb) =>{
         var ext = path.extname(file.originalname)

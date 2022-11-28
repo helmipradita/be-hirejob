@@ -38,6 +38,11 @@ INSERT INTO employee(id,fullname,job_desk,domisili,tempat_kerja,description,skil
 
 
 
+INSERT INTO employee(id,fullname,job_desk,domisili,tempat_kerja,description,skill,working_experince,portofolio) VALUES(3,'nur fatimah','Frontend','Aceh','Perusahaan TES','lorem10','Javascript','Fullstack pada perusahaan TES 3','portofolio');
+
+
+
+
 
 
 
@@ -71,7 +76,9 @@ ON transactions.status = payment_status.id;
 UPDATE transactions SET status=2 WHERE id=1;
 
 ALTER TABLE products ADD photo VARCHAR(255);
+ALTER TABLE tbl_portofolio add Foreign Key (employee_id) REFERENCES tbl_employee(id);
 
+ALTER TABLE tbl_portofolio ADD COLUMN employee_id VARCHAR;
 
 
 

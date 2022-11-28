@@ -1,16 +1,20 @@
-const express = require('express')
-const routerEmployee = express.Router()
-const {EmployeeController} = require('../controllers/employee')
-const {uploadPortofolio}  = require('../middleware/uploadPortofolio') 
-const {protect,role} = require ('./../middleware/auth')
+const express = require(`express`);
+const router = express.Router();
+const { EmployeeController } = require(`../controllers/employee`);
+const { protect } = require('../middleware/auth');
+const {uploadPortofolio} = require ('../middleware/uploadPortofolio')
+
+//Auth
+router.post('/register', EmployeeController.register);
+router.post('/login', EmployeeController.login);
+
+//Profile
+router.get(`/profile`, protect, EmployeeController.profile);
+router.get(`/profile/:id`, EmployeeController.profileById);
+router.post('/experience', protect, EmployeeController.insertExperience);
+router.post('/skill', protect, EmployeeController.insertSkill);
+router.post('/portofolio', uploadPortofolio.single('portofolio'),EmployeeController.insertPortofolio);
+router.put('/profile/update/:id', EmployeeController.updateProfile);
 
 
-routerEmployee.get('/',EmployeeController.getEmployee)
-routerEmployee.get("/:id",EmployeeController.getEmployeeDetail);
-routerEmployee.post('/',uploadPortofolio.single('portofolio'),EmployeeController.insert)
-routerEmployee.put('/:id',uploadPortofolio.single('portofolio'),EmployeeController.update)
-routerEmployee.delete('/:id',EmployeeController.delete)
-
-
-module.exports = routerEmployee 
- 
+module.exports = router;
