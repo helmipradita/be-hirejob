@@ -113,6 +113,13 @@ const CompanyController = {
         return response(res, 404, false, null, ' email not found');
       }
 
+      if (tbl_company === undefined) {
+        res.json({
+          message: 'invalid token',
+        });
+        return;
+      }
+
       let data = {
         fullname: tbl_company.fullname,
         email: tbl_company.email,
