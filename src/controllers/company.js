@@ -82,6 +82,10 @@ const CompanyController = {
       return response(res, 404, false, null, ' email not found');
     }
 
+    if (tbl_company.verif == 0) {
+      return response(res, 404, false, null, ' email not verified');
+    }
+
     const password = req.body.password;
     const validation = bcrypt.compareSync(password, tbl_company.password);
     if (!validation) {
@@ -132,7 +136,7 @@ const CompanyController = {
 
       delete tbl_company.password;
 
-      response(res, 200, true, data, 'Successfully get profile recruiter');
+      response(res, 200, true, data, 'Successfully get profile company');
     } catch (err) {
       response(res, 404, false, err, 'register fail');
     }
@@ -194,7 +198,6 @@ const CompanyController = {
       };
 
       await update(data, id);
-      // response(res, data, 200, 'update profile success');
       response(res, 200, true, data, 'update profile success');
     } catch (error) {
       console.log(error);

@@ -12,7 +12,7 @@ router.post('/resetPassword/:token', CompanyController.resetPassword);
 
 //Profile
 router.get('/profile', protect, CompanyController.profile);
-router.post('/hire', protect, CompanyController.addHire);
 router.put(`/:id`, protect, CompanyController.updateProfile);
+router.post('/hire', protect, CompanyController.addHire);
 
 module.exports = router;
