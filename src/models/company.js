@@ -195,6 +195,38 @@ const getEmployeeById = async (id) => {
   });
 };
 
+const getDataSkillId = (id) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'SELECT * FROM tbl_skill WHERE user_id = $1',
+      [id],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+const getDataPortofolioId = (id) => {
+  return new Promise((resolve, reject) => {
+    Pool.query(
+      'SELECT * FROM tbl_portofolio WHERE employee_id = $1',
+      [id],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   register,
   findEmail,
@@ -205,4 +237,6 @@ module.exports = {
   countAll,
   getList,
   getEmployeeById,
+  getDataSkillId,
+  getDataPortofolioId,
 };

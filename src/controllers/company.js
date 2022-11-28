@@ -9,6 +9,8 @@ const {
   countAll,
   getList,
   getEmployeeById,
+  getDataSkillId,
+  getDataPortofolioId,
 } = require(`../models/company`);
 
 const bcrypt = require('bcryptjs');
@@ -315,6 +317,28 @@ const CompanyController = {
       response(res, 200, true, tbl_employee, 'Get Data success');
     } catch (error) {
       console.log(error);
+      response(res, 404, false, null, ' Get Data fail');
+    }
+  },
+  getSkillById: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const {
+        rows: [tbl_skill],
+      } = await getDataSkillId(id);
+      response(res, 200, true, tbl_skill, 'Get Data success');
+    } catch (error) {
+      response(res, 404, false, null, ' Get Data fail');
+    }
+  },
+  getPortofolioById: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const {
+        rows: [tbl_portofolio],
+      } = await getDataPortofolioId(id);
+      response(res, 200, true, tbl_portofolio, 'Get Data success');
+    } catch (error) {
       response(res, 404, false, null, ' Get Data fail');
     }
   },

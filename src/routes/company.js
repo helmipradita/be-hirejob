@@ -13,6 +13,8 @@ router.post('/resetPassword/:token', CompanyController.resetPassword);
 //Profile
 router.get('/', CompanyController.getEmp);
 router.get('/:id', protect, CompanyController.getEmpById);
+router.get('/skill/:id', protect, CompanyController.getSkillById);
+router.get('/portofolio/:id', protect, CompanyController.getPortofolioById);
 router.get('/profile', protect, CompanyController.profile);
 router.put(`/:id`, protect, CompanyController.updateProfile);
 router.post('/hire', protect, CompanyController.addHire);
