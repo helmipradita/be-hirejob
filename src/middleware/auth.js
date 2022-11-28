@@ -1,3 +1,4 @@
+
 const { response } = require("./common");
 const jwt = require("jsonwebtoken");
 
@@ -11,11 +12,13 @@ const role = (req, res, next) => {
   }
 };
 
+
 const protect = (req, res, next) => {
   try {
     let token;
     if (req.headers.authorization) {
       let auth = req.headers.authorization;
+
       token = auth.split(" ")[1];
       let decode = jwt.verify(token, key);
       req.payload = decode;
@@ -36,3 +39,4 @@ const protect = (req, res, next) => {
 };
 
 module.exports = { role, protect };
+

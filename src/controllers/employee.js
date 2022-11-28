@@ -1,4 +1,5 @@
 const { response } = require(`../middleware/common`);
+//const cloudinary = require ('../middleware/cloudinary')
 const {
   register,
   findEmail,
@@ -7,6 +8,9 @@ const {
   setSkill,
   verification,
   changePassword,
+  updateDataProfile,
+  setPortofolio
+
 } = require(`../models/employee`);
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
@@ -17,6 +21,14 @@ const {
 } = require(`../helpers/auth`);
 const email = require("../middleware/email");
 const refreshTokens = [];
+const cloudinary = require('cloudinary').v2;
+
+
+cloudinary.config({
+    cloud_name :process.env.CLOUD_NAME,
+    api_key    :process.env.CLOUDINARY_API_KEY,
+    api_secret :process.env.CLOUDINARY_API_SECRET
+})
 
 const Port = process.env.PORT;
 const Host = process.env.HOST;
@@ -237,6 +249,46 @@ const EmployeeController = {
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
     return response(res, 200, true, result, " change password email success");
+  },
+
+  updateProfile: async (req, res, next) => {
+    
+    try {
+
+      //const { id,jobdesk, domisili, tempat_kerja, deskripsi } = req.body;
+  
+      const dataProfile = {
+        id : req.body.id,
+        jobdesk : req.body.jobdesk,
+        domisili : req.body.domisili,
+        tempat_kerja : req.body.tempat_kerja,
+        deskripsi : req.body.deskripsi
+      };
+      await updateDataProfile(req.params.id, req.body);
+      response(res, 200, true, dataProfile, 'Update Data success sakali');
+    } catch (error) {
+      console.log(error);
+      response(res, 404, false, 'Update data fail');
+    }
+  },
+
+  insertPortofolio: async (req, res, next) => {
+    try {
+      //const employee_id = req.payload.id;
+       req.body.nama_app =  req.body.nama_app
+       req.body.link_repo = req.body.link_repo
+       req.body.tipe_repo = req.body.tipe_repo
+       const uploadPorto = await cloudinary.uploader.upload(req.file.path, {folder : 'portofolio'})
+       req.body.photo = uploadPorto.url
+       console.log(uploadPorto)
+       req.body.employee_id = req.body.employee_id
+      
+      await setPortofolio(req.body);
+      return response(res, 200, true, req.body, 'Insert Portofolio success');
+    } catch (error) {
+      console.log(error);
+      return response(res, 404, false,error, 'Insert Portofolio fail');
+    }
   },
 };
 
