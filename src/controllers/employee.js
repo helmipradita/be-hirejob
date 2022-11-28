@@ -1,5 +1,4 @@
 const { response } = require(`../middleware/common`);
-//const cloudinary = require ('../middleware/cloudinary')
 const {
   register,
   findEmail,
@@ -19,7 +18,6 @@ const {
   decodeToken,
 } = require(`../helpers/auth`);
 const email = require('../middleware/email');
-const refreshTokens = [];
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
@@ -94,6 +92,10 @@ const EmployeeController = {
     const validation = bcrypt.compareSync(password, tbl_employee.password);
     if (!validation) {
       return response(res, 404, false, null, 'wrong password');
+    }
+
+    if (tbl_employee.verif == 0) {
+      return response(res, 404, false, null, ' email not verified');
     }
 
     delete tbl_employee.password;
