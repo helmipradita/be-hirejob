@@ -322,22 +322,20 @@ const CompanyController = {
   },
   getSkillById: async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const {
-        rows: [tbl_skill],
-      } = await getDataSkillId(id);
-      response(res, 200, true, tbl_skill, 'Get Data success');
+      const id = req.params.id;
+
+      const result = await getDataSkillId(id);
+      response(res, 200, true, result.rows, 'Get Data success');
     } catch (error) {
       response(res, 404, false, null, ' Get Data fail');
     }
   },
   getPortofolioById: async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const {
-        rows: [tbl_portofolio],
-      } = await getDataPortofolioId(id);
-      response(res, 200, true, tbl_portofolio, 'Get Data success');
+      const id = req.params.id;
+
+      const result = await getDataPortofolioId(id);
+      response(res, 200, true, result.rows, 'Get Data success');
     } catch (error) {
       response(res, 404, false, null, ' Get Data fail');
     }
