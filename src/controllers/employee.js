@@ -179,11 +179,11 @@ const EmployeeController = {
   insertSkill: async (req, res, next) => {
     try {
       const { name } = req.body;
-      const user_id = req.payload.id;
+      const employee_id = req.payload.id;
 
       const dataSkill = {
         name,
-        user_id,
+        employee_id,
       };
 
       setSkill(dataSkill);

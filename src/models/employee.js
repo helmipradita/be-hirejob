@@ -82,11 +82,11 @@ const setExperience = ({
   });
 };
 
-const setSkill = ({ name, user_id }) => {
+const setSkill = ({ name, employee_id }) => {
   return new Promise((resolve, reject) => {
     Pool.query(
-      'INSERT INTO tbl_skill(user_id, name) VALUES ($2, $1)',
-      [name, user_id],
+      'INSERT INTO tbl_skill(employee_id, name) VALUES ($2, $1)',
+      [name, employee_id],
       (error, result) => {
         if (!error) {
           resolve(result);
