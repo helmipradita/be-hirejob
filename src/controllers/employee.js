@@ -265,13 +265,13 @@ const EmployeeController = {
   },
 
   resetPassword: async (req, res) => {
-    const token = req.body.token;
+    const token = req.params.token;
     const decoded = decodeToken(token);
     const {
       rows: [tbl_employee],
     } = await findEmail(decoded.email);
     if (!tbl_employee) {
-      return response(res, 404, false, null, ' email not found');
+      return response(res, 404, false, null, ' token not found');
     }
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);

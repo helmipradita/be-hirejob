@@ -249,7 +249,7 @@ const CompanyController = {
     };
     const token = generateToken(payload);
 
-    let text = `Hello ${tbl_company.name} \n please click link below to reset password http://localhost:8000/tbl_company/resetPassword/${token}`;
+    let text = `Hello ${tbl_company.fullname} \n please click link below to reset password http://localhost:8000/tbl_company/resetPassword/${token}`;
     const subject = `Reset Password`;
     let sendEmail = email(req.body.email, subject, text);
     if (sendEmail == 'email not sent!') {
@@ -259,13 +259,13 @@ const CompanyController = {
   },
 
   resetPassword: async (req, res) => {
-    const token = req.body.token;
+    const token = req.params.token;
     const decoded = decodeToken(token);
     const {
       rows: [tbl_company],
     } = await findEmail(decoded.email);
     if (!tbl_company) {
-      return response(res, 404, false, null, ' email not found');
+      return response(res, 404, false, null, ' token not found');
     }
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
@@ -289,11 +289,23 @@ const CompanyController = {
         offset,
       });
 
+      // const {
+      //   rows: [count],
+      // } = await countAll();
+      // const totalData =
+      //   search === '' ? parseInt(count.total) : result.rows.length;
+      // const totalPage = Math.ceil(totalData / limit);
+      // const pagination = {
+      //   currentPage: page,
+      //   limit,
+      //   totalData,
+      //   totalPage,
+      // };
+
       const {
         rows: [count],
       } = await countAll();
-      const totalData =
-        search === '' ? parseInt(count.total) : result.rows.length;
+      const totalData = parseInt(count.total);
       const totalPage = Math.ceil(totalData / limit);
       const pagination = {
         currentPage: page,
@@ -301,6 +313,7 @@ const CompanyController = {
         totalData,
         totalPage,
       };
+
       if (result.length > 0) {
         response(res, 200, true, result, 'Get Data success', pagination);
       } else {
