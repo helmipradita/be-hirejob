@@ -79,6 +79,9 @@ const CompanyController = {
     if (!tbl_company) {
       return response(res, 404, false, null, " email not found");
     }
+    if (tbl_company.verif == 0) {
+      return response(res, 404, false, null, " email not verified");
+    }
 
     const password = req.body.password;
     const validation = bcrypt.compareSync(password, tbl_company.password);
@@ -200,7 +203,7 @@ const CompanyController = {
     };
     const token = generateToken(payload);
 
-    let text = `Hello ${tbl_company.name} \n please click link below to reset password http://localhost:8000/tbl_company/resetPassword/${token}`;
+    let text = `Hello ${tbl_company.fullname} \n please click link below to reset password http://localhost:8000/tbl_company/resetPassword/ ${token}`;
     const subject = `Reset Password`;
     let sendEmail = email(req.body.email, subject, text);
     if (sendEmail == "email not sent!") {
@@ -210,17 +213,17 @@ const CompanyController = {
   },
 
   resetPassword: async (req, res) => {
-    const token = req.body.token;
+    const token = req.params.token;
     const decoded = decodeToken(token);
     const {
       rows: [tbl_company],
     } = await findEmail(decoded.email);
     if (!tbl_company) {
-      return response(res, 404, false, null, " email not found");
+      return response(res, 404, false, null, " token not found");
     }
     let password = bcrypt.hashSync(req.body.password);
     const result = await changePassword(decoded.email, password);
-    return response(res, 200, true, result, " change password email success");
+    return response(res, 200, true, result, " change password success");
   },
 };
 
