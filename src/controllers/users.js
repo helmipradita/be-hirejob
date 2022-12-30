@@ -4,7 +4,6 @@ const {
   findEmail,
   verification,
   changePassword,
-  updateToken,
 } = require("../models/users");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
