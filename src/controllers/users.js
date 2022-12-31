@@ -24,7 +24,6 @@ const UsersController = {
     let {
       rows: [users],
     } = await findEmail(req.body.email);
-    let role = req.params.role;
 
     if (users) {
       return response(res, 404, false, "email already use", " register fail");
@@ -42,17 +41,17 @@ const UsersController = {
       id: uuidv4(),
       name: req.body.name,
       email: req.body.email,
-      phone_number: req.body.phone_number,
+      phone: req.body.phone,
       company: req.body.company,
       position: req.body.position,
       password,
-      role,
+      role: req.params.role,
       otp,
     };
     try {
       const result = await create(data);
       if (result) {
-        let verifUrl = `http://${Host}:${Port}/users/${req.body.email}/${otp}`;
+        let verifUrl = `http://${Host}:${Port}/auth/${req.body.email}/${otp}`;
         let text = `Hello ${req.body.name} \n Thank you for join us. Please confirm your email by clicking on the following link ${verifUrl}`;
         const subject = `${otp} is your otp`;
         let sendEmail = email(req.body.email, subject, text);
@@ -71,52 +70,6 @@ const UsersController = {
       console.log(err);
       response(res, 404, false, err, " register fail");
     }
-  },
-
-  refresh: async (req, res) => {
-    const {
-      rows: [users],
-    } = await findEmail(req.body.email_user);
-    if (!users) {
-      return resp(res, 404, false, "Email not found");
-    }
-    const { refreshToken } = req.body;
-    if (!refreshToken) {
-      return resp(res, 404, false, "Wrong refresh token ");
-    }
-    const payload = {
-      email_user: users.email_user,
-      role_user: users.role_user,
-    };
-    users.newToken = generateToken(payload);
-    resp(res, 200, true, users, "Success get new token ");
-  },
-
-  login: async (req, res, next) => {
-    let {
-      rows: [users],
-    } = await findEmail(req.body.email);
-    if (!users) {
-      return response(res, 404, false, null, " email not found");
-    }
-    if (users.verif == 0) {
-      return response(res, 404, false, null, " email not verified");
-    }
-    const password = req.body.password;
-    const validation = bcrypt.compareSync(password, users.password);
-    if (!validation) {
-      return response(res, 404, false, null, "wrong password");
-    }
-    delete users.password;
-    delete users.otp;
-    delete users.verif;
-    let payload = {
-      email: users.email,
-      role: users.role,
-    };
-    users.token = generateToken(payload);
-    users.refreshToken = generateRefreshToken(payload);
-    response(res, 200, true, users, "login success");
   },
 
   verificationOtp: async (req, res) => {
@@ -141,6 +94,52 @@ const UsersController = {
     );
   },
 
+  refresh: async (req, res) => {
+    const {
+      rows: [users],
+    } = await findEmail(req.body.email);
+    if (!users) {
+      return resp(res, 404, false, "Email not found");
+    }
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return resp(res, 404, false, "Wrong refresh token ");
+    }
+    const payload = {
+      email: users.email,
+      role: users.role,
+    };
+    users.newToken = generateToken(payload);
+    resp(res, 200, true, auth, "Success get new token ");
+  },
+
+  login: async (req, res, next) => {
+    let {
+      rows: [users],
+    } = await findEmail(req.body.email);
+    if (!users) {
+      return response(res, 404, false, null, " email not found");
+    }
+    if (users.verif == 0) {
+      return response(res, 404, false, null, " email not verified");
+    }
+    const password = req.body.password;
+    const validation = bcrypt.compareSync(password, users.password);
+    if (!validation) {
+      return response(res, 404, false, null, "wrong password");
+    }
+    delete users.password;
+    delete users.otp;
+    delete users.verif;
+    let payload = {
+      email: users.email,
+      role: "",
+    };
+    users.token = generateToken(payload);
+    users.refreshToken = generateRefreshToken(payload);
+    response(res, 200, true, users, "login success");
+  },
+
   forgotPassword: async (req, res) => {
     const {
       rows: [users],
@@ -153,7 +152,7 @@ const UsersController = {
     };
     const token = generateToken(payload);
 
-    let text = `Hello ${users.name} \n please click link below to reset password http://localhost:8000/users/resetPassword/${token}`;
+    let text = `Hello ${users.name} \n please click link below to reset password ${process.env.API_BE}forgot/${token}`;
     const subject = `Reset Password`;
     let sendEmail = email(req.body.email, subject, text);
     if (sendEmail == "email not sent!") {

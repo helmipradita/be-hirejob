@@ -1,22 +1,35 @@
--- Active: 1669270835800@@topsy.db.elephantsql.com@5432@ryfxunak@public
+-- Active: 1672385416262@@149.129.241.190@5432@arutala
 create table test(id INT, name VARCHAR(35));
 
-CREATE TABLE users(id VARCHAR NOT NULL PRIMARY KEY, name VARCHAR NOT NULL, email TEXT NOT NULL,  phone_number VARCHAR, company VARCHAR(50), position VARCHAR(50), password TEXT NOT NULL, role VARCHAR, verif VARCHAR(1), otp VARCHAR);
+CREATE TABLE users(
+  id VARCHAR NOT NULL PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  email TEXT NOT NULL,
+  phone VARCHAR,
+  company VARCHAR,
+  position VARCHAR,
+  password TEXT NOT NULL,
+  role VARCHAR,
+  verif VARCHAR(1),
+  otp VARCHAR 
+ );
+
+ DROP TABLE users
+
+-- Active: 1672385416262@@149.129.241.190@5432@postgres@public
 
 
--- Active: 1669203562756@@topsy.db.elephantsql.com@5432@ryfxunak
--- Active: 1666321324503@@127.0.0.1@5432@helmi@public
-
-CREATE TABLE tbl_skill (
+CREATE TABLE skill (
     id SERIAL PRIMARY KEY,
     name VARCHAR,
 	user_id VARCHAR
 );
 
-CREATE TABLE tbl_employee (
-    id VARCHAR PRIMARY KEY,
+CREATE TABLE employee (
+    id VARCHAR NOT NULL PRIMARY KEY,
+	user_id VARCHAR,
     fullname VARCHAR,
-	email VARCHAR,
+	email VARCHAR NOT NULL,
 	telepon VARCHAR,
 	password VARCHAR,
 	jobdesk VARCHAR,
