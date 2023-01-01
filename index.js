@@ -5,14 +5,14 @@ const bodyParser = require(`body-parser`);
 require(`dotenv`).config();
 const multer = require('multer')
 const mainRouter = require('./src/routes/index');
-
-
 const app = express();
 const port = process.env.PORT;
-
 //working_experince dan employee
 const working_experince = require('./src/routes/working_experince')
 const employee = require('./src/routes/employee');
+const portofolio = require('./src/routes/portofolio');
+
+
 
 
 app.use(cors());
@@ -27,6 +27,7 @@ app.use('/image',express.static('./uploadPortofolio'))
 //working_experince dan employee
 app.use('/working_experince',working_experince)
 app.use('/employee',employee)
+app.use('/portofolio',portofolio)
 
 
 

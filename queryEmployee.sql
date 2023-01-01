@@ -93,6 +93,18 @@ role VARCHAR
 INSERT INTO users(id,email,password,fullName,role) VALUES('1','sri2000@gmail.com','12345','sri-yuniar','admin');
 SELECT * FROM users WHERE email='namaemail@gmail.com';
 
+CREATE TABLE portofolio(
+    id VARCHAR PRIMARY KEY,
+    user_id VARCHAR REFERENCES users(id),
+    repo_link VARCHAR,
+    repo_type VARCHAR,
+    photo VARCHAR,
+    create_at VARCHAR,
+    description TIMESTAMP
+);
+
+
+
 
 
 

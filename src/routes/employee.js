@@ -2,7 +2,7 @@ const express = require(`express`);
 const router = express.Router();
 const { EmployeeController } = require(`../controllers/employee`);
 const { protect } = require('../middleware/auth');
-const { uploadPortofolio } = require('../middleware/uploadPortofolio');
+const { upload } = require('../middleware/uploadPortofolio');
 
 //Auth
 router.post('/register', EmployeeController.register);
@@ -19,7 +19,7 @@ router.post('/skill', protect, EmployeeController.insertSkill);
 router.post(
   '/portofolio',
   protect,
-  uploadPortofolio.single('photo'),
+  upload.single('photo'),
   EmployeeController.insertPortofolio
 );
 router.put('/profile/update/:id', EmployeeController.updateProfile);
