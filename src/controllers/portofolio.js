@@ -10,28 +10,18 @@ const cloudinary = require('cloudinary').v2;
 
 const PortoController = { 
     update : async (req,res,next) => {
-        try{
-            cloudinary.config({
-                cloud_name: process.env.CLOUD_NAME,
-                api_key: process.env.CLOUDINARY_API_KEY,
-                api_secret: process.env.CLOUDINARY_API_SECRET,
-              });
+        try {
             const id =  uuidv4()
-            // const {user_id,repo_link,repo_type,create_at,description} = req.body
-            const image = await cloudinary.uploader.upload(req.file.path, {folder : 'porto'})
-            const porto = {
-                id ,
-                user_id : req.body.user_id,
-                repo_link : req.body.repo_link,
-                repo_type: req.body.repo_type,
-                photo : image.url,
-                description : req.body.description
-            }
-            await ModelPorto.updatePorto(req.params.id,porto)
-            response (res,200,true,porto,'update portofolio success') 
-        }catch (err){
-            response(res,401,false,err,'update portofolio fail')
-        } 
+            const {user_id,repo_link,repo_type,description} = req.body
+            const photo = req.file
+            const image = await cloudinary.uploader.upload(photo.path)
+            const data = { id,user_id,repo_link,repo_type,photo: image.secure_url,description }
+            console.log(data);
+            const {rows} = await ModelPorto.updatePorto(req.params.id,data)
+            response(res, 200, 'sucess', rows, 'insert portofolio sucess')
+        } catch (error) {
+            console.log(error);
+        }
     },    
     delete : (req,res,next) => {
         ModelPorto.deletePorto(req.params.id)
@@ -48,32 +38,19 @@ const PortoController = {
         .then((result) => response (res,200,true,result.rows,'get portofolio success'))
         .catch((err) => response(res,401,false,err,'get portofolio fail'));
     },
-    insert : async (req,res,next) => {
-        try{
-            cloudinary.config({
-                cloud_name: process.env.CLOUD_NAME,
-                api_key: process.env.CLOUDINARY_API_KEY,
-                api_secret: process.env.CLOUDINARY_API_SECRET,
-              });
+    insert: async(req,res,next) => {
+        try {
             const id =  uuidv4()
-            // const {user_id,repo_link,repo_type,create_at,description} = req.body
-            const image = await cloudinary.uploader.upload(req.file.path, {folder : 'porto'})
-            const porto = {
-                id ,
-                user_id : req.body.user_id,
-                repo_link : req.body.repo_link,
-                repo_type: req.body.repo_type,
-                photo : image.url,
-                description : req.body.description
-            }
-            console.log(porto)
-            await ModelPorto.insertPorto(porto)
-            response (res,200,true,porto,'insert portofolio success ') 
-            
-        }catch (err) {
-            response(res,401,false,err.message,'insert portofolio fail apaaan tauuuuuuuu')
-            console.log(JSON.stringify(err))
-        } 
+            const {user_id,repo_link,repo_type,description} = req.body
+            const photo = req.file
+            const image = await cloudinary.uploader.upload(photo.path)
+            const data = { id,user_id,repo_link,repo_type,photo: image.secure_url,description }
+            console.log(data);
+            const {rows} = await ModelPorto.insertPorto(data)
+            response(res, 200, 'sucess', rows, 'insert portofolio sucess')
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 
